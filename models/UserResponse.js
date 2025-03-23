@@ -21,7 +21,7 @@ const model = UserResponse.init(
     },
     CompletedAt: {
       type: DataTypes.DATE,
-      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+      defaultValue: DataTypes.NOW,
       allowNull: false,
     },
   },

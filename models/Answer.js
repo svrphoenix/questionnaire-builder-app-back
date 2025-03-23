@@ -29,7 +29,7 @@ const model = Answer.init(
     },
     CompleteddAt: {
       type: DataTypes.DATE,
-      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+      defaultValue: DataTypes.NOW,
       allowNull: false,
     },
   },

@@ -5,15 +5,27 @@ import UserResponse from './UserResponse.js';
 import Answer from './Answer.js';
 
 export const defineRelationships = () => {
-  Questionnaire.hasMany(Question, { foreignKey: 'QuestionnaireId' });
-  Question.belongsTo(Questionnaire, { foreignKey: 'QuestionnaireId' });
+  Questionnaire.hasMany(Question, {
+    foreignKey: 'QuestionnaireId',
+    onDelete: 'CASCADE',
+  });
+  Question.belongsTo(Questionnaire, {
+    foreignKey: 'QuestionnaireId',
+    onDelete: 'CASCADE',
+  });
 
-  Question.hasMany(Choice, { foreignKey: 'QuestionId' });
-  Choice.belongsTo(Question, { foreignKey: 'QuestionId' });
+  Question.hasMany(Choice, { foreignKey: 'QuestionId', onDelete: 'CASCADE' });
+  Choice.belongsTo(Question, { foreignKey: 'QuestionId', onDelete: 'CASCADE' });
 
-  UserResponse.belongsTo(Questionnaire, { foreignKey: 'QuestionnaireId' });
-  UserResponse.hasMany(Answer, { foreignKey: 'UserResponseId' });
+  UserResponse.belongsTo(Questionnaire, {
+    foreignKey: 'QuestionnaireId',
+    onDelete: 'CASCADE',
+  });
+  UserResponse.hasMany(Answer, {
+    foreignKey: 'UserResponseId',
+    onDelete: 'CASCADE',
+  });
 
-  Answer.belongsTo(Question, { foreignKey: 'QuestionId' });
-  Answer.belongsTo(Choice, { foreignKey: 'ChoiceId' });
+  Answer.belongsTo(Question, { foreignKey: 'QuestionId', onDelete: 'CASCADE' });
+  Answer.belongsTo(Choice, { foreignKey: 'ChoiceId', onDelete: 'CASCADE' });
 };

@@ -4,6 +4,7 @@ import logger from 'morgan';
 import cors from 'cors';
 
 import indexRouter from './routes/index.js';
+import questionnairesRouter from './routes/questionnaire.routes.js';
 
 const app = express();
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
@@ -21,6 +22,7 @@ app.use(cors(corsOptions));
 
 // Routes setup
 app.use('/', indexRouter);
+app.use('/questionnaires', questionnairesRouter);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -29,8 +31,16 @@ app.use((req, res, next) => {
 
 // Error handler
 app.use((err, req, res, next) => {
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
   console.error(err.stack);
-  res.status(500).send('Internal server error');
+
+  res.status(err.status || 500);
+  res.send({
+    message: err.message,
+    error: res.locals.error,
+  });
 });
 
 export default app;

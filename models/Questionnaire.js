@@ -1,4 +1,4 @@
-import { Model, DataTypes, literal } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import db from '../lib/db.js';
 
 class Questionnaire extends Model {}
@@ -31,12 +31,12 @@ const model = Questionnaire.init(
     },
     CreatedAt: {
       type: DataTypes.DATE,
-      defaultValue: literal('CURRENT_TIMESTAMP'),
+      defaultValue: DataTypes.NOW,
       allowNull: false,
     },
     UpdatedAt: {
       type: DataTypes.DATE,
-      defaultValue: literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
+      defaultValue: DataTypes.NOW,
       allowNull: false,
     },
   },

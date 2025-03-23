@@ -21,14 +21,12 @@ const model = Choice.init(
     },
     CreatedAt: {
       type: DataTypes.DATE,
-      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+      defaultValue: DataTypes.NOW,
       allowNull: false,
     },
     UpdatedAt: {
       type: DataTypes.DATE,
-      defaultValue: Sequelize.literal(
-        'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
-      ),
+      defaultValue: DataTypes.NOW,
       allowNull: false,
     },
   },

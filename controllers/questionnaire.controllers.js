@@ -4,6 +4,7 @@ import {
   getAllQuestionnaires,
   getQuestionnaire,
   updateQuestionnaire,
+  updateQuestionnaireCompletions,
 } from '../sevices/questionnaires.service.js';
 
 const getAllquestionnairesController = async (req, res, next) => {
@@ -91,10 +92,29 @@ const updateQuestionaireController = async (req, res, next) => {
   }
 };
 
+const updateCompletionsController = async (req, res, next) => {
+  const questionaireId = req.params.id;
+
+  try {
+    if (!questionaireId) {
+      return res.status(400).json({ message: 'Questionaire Id is required' });
+    }
+    const result = await updateQuestionnaireCompletions(questionaireId);
+    if (result === null)
+      return res.status(404).json({
+        message: `Questionaire ${questionaireId} not found`,
+      });
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   getAllquestionnairesController,
   getQuestionnairesController,
   addQuestionnaireController,
   deleteQuestionaireController,
   updateQuestionaireController,
+  updateCompletionsController,
 };

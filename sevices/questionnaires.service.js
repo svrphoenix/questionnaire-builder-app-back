@@ -159,10 +159,35 @@ async function updateQuestionnaire(questionnaireId, updatedQuiz) {
   }
 }
 
+async function updateQuestionnaireCompletions(questionnaireId) {
+  const questionnaire = await Questionnaire.findByPk(questionnaireId);
+  if (!questionnaire) {
+    return null;
+  }
+
+  try {
+    await Questionnaire.update(
+      {
+        CompletionCount: questionnaire.CompletionCount + 1,
+        UpdatedAt: new Date(),
+      },
+      {
+        where: { Id: questionnaireId },
+      }
+    );
+
+    return true;
+  } catch (error) {
+    console.error('Error details:', error);
+    throw new Error('Failed to update questionnaire');
+  }
+}
+
 export {
   getAllQuestionnaires,
   getQuestionnaire,
   addQuestionnaire,
   deleteQuestionnaire,
   updateQuestionnaire,
+  updateQuestionnaireCompletions,
 };

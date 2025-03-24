@@ -6,7 +6,7 @@ import {
   updateCompletionsController,
   updateQuestionaireController,
 } from '../controllers/questionnaire.controllers.js';
-import { updateQuestionnaireCompletions } from '../sevices/questionnaires.service.js';
+
 import router from './index.js';
 
 router

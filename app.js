@@ -5,6 +5,7 @@ import cors from 'cors';
 
 import indexRouter from './routes/index.js';
 import questionnairesRouter from './routes/questionnaire.routes.js';
+import responsesRouter from './routes/responses.route.js';
 
 const app = express();
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
@@ -23,6 +24,7 @@ app.use(cors(corsOptions));
 // Routes setup
 app.use('/', indexRouter);
 app.use('/questionnaires', questionnairesRouter);
+app.use('/responses', responsesRouter);
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {

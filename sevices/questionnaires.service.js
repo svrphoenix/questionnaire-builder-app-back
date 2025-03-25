@@ -12,7 +12,7 @@ async function getAllQuestionnaires({ page = 1, size = 10, filter = {} }) {
       'QuestionCount',
       'CompletionCount',
     ],
-    order: [['Name', 'DESC']],
+    order: [['Name', 'ASC']],
     offset: (page - 1) * size,
     limit: +size,
   };
@@ -25,8 +25,8 @@ async function getAllQuestionnaires({ page = 1, size = 10, filter = {} }) {
 
   return {
     Data: result.rows,
-    Count: result.count.length,
-    CountPages: Math.ceil(result.count.length / size || 1),
+    Count: result.count,
+    CountPages: Math.ceil(result.count / size || 1),
   };
 }
 

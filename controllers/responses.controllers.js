@@ -1,20 +1,25 @@
 import { storeUserResponses } from '../sevices/responses.service.js';
 
 const createUserResponsesController = async (req, res, next) => {
-  const questionaireId = req.params.id;
+  const questionnaireId = req.params.id;
   const responses = req.body;
+
   try {
-    if ((responses.lenght = 0)) {
-      return res.status(422).json({ message: 'Questionnaire has no answers' });
+    if (!responses || responses.length === 0) {
+      const error = new Error('Questionnaire has no answers');
+      error.status = 422;
+      return next(error);
     }
 
     const createdResponses = await storeUserResponses(
       1,
-      questionaireId,
+      questionnaireId,
       responses
     );
-    res.json(createdResponses);
+
+    res.status(201).json(createdResponses);
   } catch (error) {
+    error.status = error.status || 500;
     next(error);
   }
 };

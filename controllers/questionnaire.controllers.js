@@ -1,3 +1,4 @@
+import { validateQuestionnaireInput } from '../helpers/bodyValidate.js';
 import {
   addQuestionnaire,
   deleteQuestionnaire,
@@ -17,95 +18,112 @@ const getAllquestionnairesController = async (req, res, next) => {
 };
 
 const getQuestionnairesController = async (req, res, next) => {
-  const questionaireId = req.params.id;
+  const questionnaireId = req.params.id;
 
   try {
-    if (!questionaireId) {
-      return res.status(400).json({ message: 'Questionaire Id is required' });
+    if (!questionnaireId) {
+      const error = new Error('Questionnaire Id is required');
+      error.status = 400;
+      return next(error);
     }
-    const questionaire = await getQuestionnaire(questionaireId);
-    if (!questionaire)
-      return res.status(404).json({
-        message: `Questionaire ${questionaire} not found`,
-      });
-    res.json(questionaire);
+    const questionnaire = await getQuestionnaire(questionnaireId);
+    if (!questionnaire) {
+      const error = new Error(`Questionnaire ${questionnaireId} not found`);
+      error.status = 404;
+      return next(error);
+    }
+
+    res.json(questionnaire);
   } catch (error) {
+    error.status = error.status || 500;
     next(error);
   }
 };
 
 const addQuestionnaireController = async (req, res, next) => {
-  const newQuiz = req.body;
-  try {
-    if (!newQuiz.Name) {
-      return res
-        .status(400)
-        .json({ message: 'Questionnaire Name is required' });
-    }
-    if ((newQuiz.Questions.lenght = 0)) {
-      return res
-        .status(422)
-        .json({ message: 'Questionnaire has no questions' });
-    }
+  const errors = validateQuestionnaireInput(req.body);
+  if (errors.length > 0) {
+    return res.status(400).json({ message: errors.join(', ') });
+  }
 
-    const addedQuiz = await addQuestionnaire(newQuiz);
+  try {
+    const addedQuiz = await addQuestionnaire(req.body);
     res.json(addedQuiz);
   } catch (error) {
+    error.status = 500;
     next(error);
   }
 };
 
 const deleteQuestionaireController = async (req, res, next) => {
-  const questionaireId = req.params.id;
+  const questionnaireId = req.params.id;
 
   try {
-    if (!questionaireId) {
-      return res.status(400).json({ message: 'Questionaire Id is required' });
+    if (!questionnaireId) {
+      const error = new Error('Questionnaire ID is required');
+      error.status = 400;
+      return next(error);
     }
-    const deleteQuestionaireId = await deleteQuestionnaire(questionaireId);
-    if (deleteQuestionaireId === null)
-      return res.status(404).json({
-        message: `Questionaire ${questionaireId} not found`,
-      });
+
+    const result = await deleteQuestionnaire(questionnaireId);
+    if (!result) {
+      const error = new Error(`Questionnaire ${questionnaireId} not found`);
+      error.status = 404;
+      return next(error);
+    }
+
     res.status(204).end();
   } catch (error) {
+    error.status = error.status || 500;
     next(error);
   }
 };
 
 const updateQuestionaireController = async (req, res, next) => {
-  const questionaireId = req.params.id;
-  const updatedQuiz = req.body;
+  const questionnaireId = req.params.id;
 
   try {
-    if (!questionaireId) {
-      return res.status(400).json({ message: 'Questionaire Id is required' });
+    if (!questionnaireId) {
+      const error = new Error('Questionnaire ID is required');
+      error.status = 400;
+      return next(error);
     }
-    const updatedId = await updateQuestionnaire(questionaireId, updatedQuiz);
-    if (updatedId === null)
-      return res.status(404).json({
-        message: `Questionaire ${questionaireId} not found`,
-      });
-    res.json(questionaireId);
+
+    const updatedQuiz = req.body;
+    const updatedId = await updateQuestionnaire(questionnaireId, updatedQuiz);
+    if (!updatedId) {
+      const error = new Error(`Questionnaire ${questionnaireId} not found`);
+      error.status = 404;
+      return next(error);
+    }
+
+    res.json(updatedId);
   } catch (error) {
+    error.status = error.status || 500;
     next(error);
   }
 };
 
 const updateCompletionsController = async (req, res, next) => {
-  const questionaireId = req.params.id;
+  const questionnaireId = req.params.id;
 
   try {
-    if (!questionaireId) {
-      return res.status(400).json({ message: 'Questionaire Id is required' });
+    if (!questionnaireId) {
+      const error = new Error('Questionnaire ID is required');
+      error.status = 400;
+      return next(error);
     }
-    const result = await updateQuestionnaireCompletions(questionaireId);
-    if (result === null)
-      return res.status(404).json({
-        message: `Questionaire ${questionaireId} not found`,
-      });
+
+    const result = await updateQuestionnaireCompletions(questionnaireId);
+    if (!result) {
+      const error = new Error(`Questionnaire ${questionnaireId} not found`);
+      error.status = 404;
+      return next(error);
+    }
+
     res.status(204).end();
   } catch (error) {
+    error.status = error.status || 500;
     next(error);
   }
 };

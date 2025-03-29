@@ -4,62 +4,81 @@ import { Choice, Question, Questionnaire } from '../models/index.js';
 import { updateQuestionsAndChoices } from '../helpers/updateAssotiated.js';
 
 async function getAllQuestionnaires({ page = 1, size = 10, filter = {} }) {
-  const params = {
-    attributes: [
-      'Id',
-      'Name',
-      'Description',
-      'QuestionCount',
-      'CompletionCount',
-    ],
-    order: [['Name', 'ASC']],
-    offset: (page - 1) * size,
-    limit: +size,
-  };
+  try {
+    const params = {
+      attributes: [
+        'Id',
+        'Name',
+        'Description',
+        'QuestionCount',
+        'CompletionCount',
+      ],
+      order: [['Name', 'ASC']],
+      offset: (page - 1) * size,
+      limit: +size,
+    };
 
-  if (filter.Name) {
-    params.where.Name = { [Op.like]: `%${filter.Name}%` };
+    if (filter.Name) {
+      params.where.Name = { [Op.like]: `%${filter.Name}%` };
+    }
+
+    const result = await Questionnaire.findAndCountAll(params);
+
+    return {
+      Data: result.rows,
+      Count: result.count,
+      CountPages: Math.ceil(result.count / size || 1),
+    };
+  } catch (error) {
+    console.error('Error in getAllQuestionnaires:', error.message);
+    error.status = 500;
+    throw error;
   }
-
-  const result = await Questionnaire.findAndCountAll(params);
-
-  return {
-    Data: result.rows,
-    Count: result.count,
-    CountPages: Math.ceil(result.count / size || 1),
-  };
 }
 
 async function getQuestionnaire(questionnaireId) {
-  const params = {
-    where: {
-      Id: questionnaireId,
-    },
-    attributes: [
-      'Id',
-      'Name',
-      'Description',
-      'QuestionCount',
-      'CompletionCount',
-    ],
-    include: [
-      {
-        association: 'Questions',
-        attributes: ['QuestionText', 'QuestionType'],
-        include: [
-          {
-            association: 'Choices',
-            attributes: ['ChoiceText'],
-          },
-        ],
+  try {
+    const params = {
+      where: {
+        Id: questionnaireId,
       },
-    ],
-    order: [['Name', 'DESC']],
-  };
+      attributes: [
+        'Id',
+        'Name',
+        'Description',
+        'QuestionCount',
+        'CompletionCount',
+      ],
+      include: [
+        {
+          association: 'Questions',
+          attributes: ['Id', 'QuestionText', 'QuestionType'],
+          include: [
+            {
+              association: 'Choices',
+              attributes: ['Id', 'ChoiceText'],
+            },
+          ],
+        },
+      ],
+      order: [['Name', 'DESC']],
+    };
 
-  const quiz = await Questionnaire.findOne(params);
+    const quiz = await Questionnaire.findOne(params);
+    if (!quiz) {
+      const error = new Error(
+        `Questionnaire with ID ${questionnaireId} not found`
+      );
+      error.status = 404;
+      throw error;
+    }
 
-  return quiz;
+    return quiz;
+  } catch (error) {
+    console.error('Error in getQuestionnaire:', error.message);
+    error.status = error.status || 500;
+    throw error;
+  }
 }
 
 async function addQuestionnaire(newQuiz) {
@@ -80,8 +99,9 @@ async function addQuestionnaire(newQuiz) {
     return { Id };
   } catch (error) {
     if (transaction) await transaction.rollback();
-    console.error('Error details:', error);
-    throw new Error('Failed to create new questionnaire');
+    console.error('Error in addQuestionnaire:', error.message);
+    error.status = 500;
+    throw error;
   }
 }
 
@@ -92,7 +112,11 @@ async function deleteQuestionnaire(questionnaireId) {
     const questionnaire = await Questionnaire.findByPk(questionnaireId);
 
     if (!questionnaire) {
-      return null;
+      const error = new Error(
+        `Questionnaire with ID ${questionnaireId} not found`
+      );
+      error.status = 404;
+      throw error;
     }
 
     await Questionnaire.destroy({
@@ -107,20 +131,26 @@ async function deleteQuestionnaire(questionnaireId) {
     };
   } catch (error) {
     if (transaction) await transaction.rollback();
-    console.error('Error deleting questionnaire:', error);
-    throw new Error('Failed to delete questionnaire');
+    console.error('Error in deleteQuestionnaire:', error.message);
+    error.status = error.status || 500;
+    throw error;
   }
 }
 
 async function updateQuestionnaire(questionnaireId, updatedQuiz) {
-  const questionnaire = await Questionnaire.findByPk(questionnaireId);
-  if (!questionnaire) {
-    return null;
-  }
-
-  const transaction = await sequelize.transaction();
-
   try {
+    const questionnaire = await Questionnaire.findByPk(questionnaireId);
+
+    if (!questionnaire) {
+      const error = new Error(
+        `Questionnaire with ID ${questionnaireId} not found`
+      );
+      error.status = 404;
+      throw error;
+    }
+
+    const transaction = await sequelize.transaction();
+
     await Questionnaire.update(
       {
         ...updatedQuiz,
@@ -154,18 +184,24 @@ async function updateQuestionnaire(questionnaireId, updatedQuiz) {
     return { questionnaireId };
   } catch (error) {
     if (transaction) await transaction.rollback();
-    console.error('Error details:', error);
-    throw new Error('Failed to update questionnaire');
+    console.error('Error in updateQuestionnaire:', error.message);
+    error.status = 500;
+    throw error;
   }
 }
 
 async function updateQuestionnaireCompletions(questionnaireId) {
-  const questionnaire = await Questionnaire.findByPk(questionnaireId);
-  if (!questionnaire) {
-    return null;
-  }
-
   try {
+    const questionnaire = await Questionnaire.findByPk(questionnaireId);
+
+    if (!questionnaire) {
+      const error = new Error(
+        `Questionnaire with ID ${questionnaireId} not found`
+      );
+      error.status = 404;
+      throw error;
+    }
+
     await Questionnaire.update(
       {
         CompletionCount: questionnaire.CompletionCount + 1,
@@ -175,11 +211,11 @@ async function updateQuestionnaireCompletions(questionnaireId) {
         where: { Id: questionnaireId },
       }
     );
-
     return true;
   } catch (error) {
-    console.error('Error details:', error);
-    throw new Error('Failed to update questionnaire');
+    console.error('Error in updateQuestionnaireCompletions:', error.message);
+    error.status = 500;
+    throw error;
   }
 }
 

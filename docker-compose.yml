@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000' # Map port 3000 on the host to port 3000 in the container
+    environment:
+      - DB_DIALECT=mysql
+      - DB_PORT=3306
+      - DB_HOSTNAME=mysql
+      - DB_USERNAME=root
+      - DB_PASSWORD=admin
+      - DB_DATABASE=questionnaire
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: questionnaire
+    ports:
+      - '3306:3306'
+    volumes:
+      - db-data:/var/lib/mysql
+
+volumes:
+  db-data:

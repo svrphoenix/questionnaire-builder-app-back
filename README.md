@@ -22,50 +22,41 @@ Before running this project, ensure you have the following installed:
 - **MySQL**: A running MySQL instance for the database.
 - **Docker**: Optional, for containerized deployment.
 
----
-
 ## Installation
 
 1. Clone the repository:
    ```bash
-   git clone <https://github.com/svrphoenix/questionnaire-builder-app-back.git>
-   cd <./questionnaire-builder-app-back>
+   git clone https://github.com/svrphoenix/questionnaire-builder-app-back.git
+   cd ./questionnaire-builder-app-back
    ```
 
 bash npm install Configure environment variables:
 
 Create a .env file in the project root with the following content:
 
-env
-
-````DB_DIALECT
-DB_PORT
-DB_HOSTNAME
-DB_USERNAME
-DB_PASSWORD
-DB_DATABASE```
+`env:  DB_DIALECT  DB_PORT  DB_HOSTNAME  DB_USERNAME  DB_PASSWORD  DB_DATABASE`
 
 ## Prepare the database:
 
 Create a MySQL database named questionnaire or update the .env file to match
 your setup.
 
-Running Locally Start the server:
+## Running Locally Start the server:
 
-bash npm start Access the backend at: http://localhost:5001 API Endpoints Base
-URL http://localhost:5001
+`bash npm start` -- Access the backend at: http://localhost:5001 -- API
+Endpoints Base URL http://localhost:5001
 
 ## Routes
 
 HTTP Method Endpoint Description
 
-- - GET / Verify server is running
-- - GET /questionnaires Retrieve all questionnaires
-- - POST /questionnaires Create a new questionnaire
-- - GET /questionnaires/:id Get questionnaire details
-- - PUT /questionnaires/:id Update a questionnaire by ID
-- - DELETE /questionnaires/:id Delete a questionnaire by ID
-- - POST /responses Add a response
+- GET / Verify server is running
+- GET /questionnaires Retrieve all questionnaires
+- POST /questionnaires Create a new questionnaire
+- GET /questionnaires/:id Get questionnaire details
+- PUT /questionnaires/:id Update a questionnaire by ID
+- DELETE /questionnaires/:id Delete a questionnaire by ID
+- POST /responses Add a response
 
 Middleware Logging: Uses morgan to log HTTP requests (dev mode for development,
 short for production).
@@ -96,4 +87,3 @@ Morgan: Middleware for HTTP request logging.
 CORS: Middleware for handling Cross-Origin Resource Sharing.
 
 License This project is licensed under the MIT License.
-````

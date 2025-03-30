@@ -50,11 +50,15 @@ URL http://localhost:5001
 
 ## Routes
 
-HTTP Method Endpoint Description GET / Verify server is running GET
-/questionnaires Retrieve all questionnaires POST /questionnaires Create a new
-questionnaire GET /questionnaires/:id Get questionnaire details PUT
-/questionnaires/:id Update a questionnaire by ID DELETE /questionnaires/:id
-Delete a questionnaire by ID POST /responses Add a response
+HTTP Method Endpoint Description
+
+- - GET / Verify server is running
+- - GET /questionnaires Retrieve all questionnaires
+- - POST /questionnaires Create a new questionnaire
+- - GET /questionnaires/:id Get questionnaire details
+- - PUT /questionnaires/:id Update a questionnaire by ID
+- - DELETE /questionnaires/:id Delete a questionnaire by ID
+- - POST /responses Add a response
 
 Middleware Logging: Uses morgan to log HTTP requests (dev mode for development,
 short for production).

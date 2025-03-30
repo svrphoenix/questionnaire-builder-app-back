@@ -23,8 +23,5 @@ EXPOSE 3000 3306
 ENV MYSQL_ROOT_PASSWORD=admin
 ENV MYSQL_DATABASE=questionnaire
 
-# Copy a MySQL initialization script to setup the database
-COPY ./init.sql /docker-entrypoint-initdb.d/
-
 # Start both MySQL and Node.js
 CMD service mysql start && npm start

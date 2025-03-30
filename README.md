@@ -36,7 +36,14 @@ bash npm install Configure environment variables:
 
 Create a .env file in the project root with the following content:
 
-env DB_DIALECT DB_PORT DB_HOSTNAME DB_USERNAME DB_PASSWORD DB_DATABASE
+env
+
+````DB_DIALECT
+DB_PORT
+DB_HOSTNAME
+DB_USERNAME
+DB_PASSWORD
+DB_DATABASE```
 
 ## Prepare the database:
 
@@ -89,3 +96,4 @@ Morgan: Middleware for HTTP request logging.
 CORS: Middleware for handling Cross-Origin Resource Sharing.
 
 License This project is licensed under the MIT License.
+````

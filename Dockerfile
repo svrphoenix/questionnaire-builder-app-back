@@ -2,7 +2,7 @@
 FROM node:22.14.0
 
 # Install MySQL server
-RUN apt-get update && apt-get install -y mysql-server
+RUN apt-get update && apt-get install -y mysqld-server
 
 # Set the working directory for the Node.js app
 WORKDIR /usr/src/app
@@ -24,4 +24,4 @@ ENV MYSQL_ROOT_PASSWORD=admin
 ENV MYSQL_DATABASE=questionnaire
 
 # Start both MySQL and Node.js
-CMD service mysql start && npm start
+CMD service mysqld start && npm start

@@ -1,4 +1,4 @@
-import { Model, STRING, DATE } from 'sequelize';
+import { Model, STRING, DATE, literal } from 'sequelize';
 import db from '../lib/db.js';
 
 class Migration extends Model {}
@@ -11,6 +11,7 @@ const model = Migration.init(
     },
     AppliedAt: {
       type: DATE,
+      defaultValue: literal('CURRENT_TIMESTAMP'),
     },
   },
   {
